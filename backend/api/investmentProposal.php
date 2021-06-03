@@ -2,9 +2,11 @@
 if($_SERVER['REQUEST_METHOD'] != 'GET'){ die(); }
 require_once './api.php';
 
+$nin = $settings['nin'];
+
 $gql = <<<QUERY
 query{
-authorizations(first: 1, filters: { nin: "8211184653" }){
+authorizations(first: 1, filters: { nin: "$nin" }){
     nodes {
         asAdministrator {
             investmentProposals(first: 10) {

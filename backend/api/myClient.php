@@ -1,15 +1,73 @@
 <?php
 require_once '../vendor/autoload.php';
+require_once './settings.php';
+use GuzzleHttp\Exception\ServerException;
 
-$gqlclient = new GraphQL\Client(
-    'https://api.stage.reguity.com',
-    ['Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOm51bGwsImNsaWVudElkIjoiZWY2NzQxYzEtZTdmNC00NWQ5LWIxZDYtZmY3MzQ0NzQzOTBjIiwiYWN0aW9ucyI6WyJhdXRob3JpemUiXSwiaWF0IjoxNjIyNzMxODcxLCJleHAiOjE2MjI3MzkwNzEsImp0aSI6ImNrcGgwbnBrMTAwM2YwaW1zMjltMDAzeXcifQ.BWiPy67gU_TuV_EHHWhWZcPaPQKvpeDbKU31rF7U67M']
-);
-
+/**
+ * @var GraphQL\Client
+ */
+$gqlclient = null;
+$settings = getSettings();
 
 function runQuery($query){
     global $gqlclient;
-    $results = $gqlclient->runRawQuery($query);
+    try{
+        $results = $gqlclient->runRawQuery($query);
+    }catch(ServerException $error){
+        $msg = strtolower($error->getMessage());
+        $tokenExpried = strpos($msg, 'authentication token expired') !== false;
+        if($tokenExpried){
+            refreshToken();
+            $results = $gqlclient->runRawQuery($query);
+        }
+    }
     return $results->getData();
 }
 
+function initClient(){
+    $token = file_get_contents(__DIR__ . '/api_auth_token');
+    if(strlen($token) > 10){
+        createClient($token);
+    }else{
+        refreshToken();
+    }
+}
+
+function refreshToken(){
+    global $authQql, $settings;
+    $gqlclient = new GraphQL\Client(
+        $settings['graphql_endpoint']
+    );
+    $results = $gqlclient->runRawQuery($authQql);
+    $data = $results->getData();
+    $token = $data->authenticateWithClientCredentials->accessToken;
+    file_put_contents(__DIR__ . '/api_auth_token', $token);
+    createClient($token);
+}
+
+function createClient($authorization){
+    global $gqlclient, $settings;
+    $gqlclient = new GraphQL\Client(
+        $settings['graphql_endpoint'],
+        ['Authorization' => $authorization ? 'Bearer ' . $authorization : '']
+    );
+}
+
+$clientId = $settings['client_id'];
+$clientSecret = $settings['client_secret'];
+
+$authQql = <<<QUERY
+mutation {
+    authenticateWithClientCredentials(
+      params: {
+        clientId: "$clientId"
+        clientSecret: "$clientSecret"
+      }
+    ) {
+      accessToken
+    }
+}
+QUERY;
+
+
+initClient();

@@ -10,10 +10,10 @@ $data = json_decode(file_get_contents('php://input'), true);
 
 $output = generateFormPdf($data);
 $rnd = time() . generateRandomString(6);
-// $filename = __DIR__ . '/../files/form_' . $rnd . '.pdf';
-$filename = 'form.pdf';
+$filename = __DIR__ . '/../files/form_' . $rnd . '.pdf';
+// $filename = 'form.pdf';
 file_put_contents($filename, $output);
 
-// sendPdf($filename, $data['e_post']);
+sendPdf($filename, $data['e_post']);
 
 respond(array());

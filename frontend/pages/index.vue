@@ -39,37 +39,79 @@
 
             <v-card v-if="selectedOffer">
                 <v-card-text>
-                    <user-form />
+                    <user-form :form="formData" @submit="formSubmit" :submitButtonLoading="submitButtonLoading" />
                 </v-card-text>
             </v-card>
-
         </div>
     </div>
 </template>
 
 <script>
-// import { mapState } from "vuex";
 import UserForm from '~/components/UserForm.vue';
 
 export default {
     components: { UserForm },
     computed: {
-        // ...mapState(["offers"]),
         selectedOffer(){
-            return this.us_selectedOffer || (this.offers && this.offers[0]) || null;
+            return this.us_selectedOffer || (this.offers && this.offers[0]) || null
         }
     },
     data: () => ({
+        submitButtonLoading: false,
         us_selectedOffer: null,
-        offers: null
+        offers: null,
+        formData: {},
     }),
     methods: {
+        async formSubmit(){
+            this.submitButtonLoading = true
+            const offer = this.selectedOffer;
+            try {
+                await this.$api.submitForm({
+                    offerId: offer.id,
+                    offerTitle: offer.title,
+                    ...this.formData
+                })
+                // this.clearForm()
+                alert('Form was successfully submited')
+            } catch (error) {
+                console.error(error)
+                alert('An error occured, Please try again')
+            }
+            this.submitButtonLoading = false
+        },
         selectOffer(offer){
-            this.us_selectedOffer = offer;
+            this.us_selectedOffer = offer
+        },
+        clearForm(){
+            this.formData = {
+                invest_data: 1,
+                jag: "firma",
+                organisationsnummer: '',
+                kvarifran: 'siab',
+                vanligen_beskriv: '',
+                personnummer: '',
+                e_post: '',
+                mobiltelefon: '',
+                mitt_namn: '',
+                chvarifran: false,
+                ange_clearing: '',
+                ange_kontonummer: '',
+                varifran: false,
+                personer_med1: '',
+                personer_med2: '',
+                personer_med3: '',
+                personer_med4: '',
+                agande1: null,
+                agande2: null,
+                agande3: null,
+                agande4: null,
+            }
         }
     },
     async created(){
-        this.offers = await this.$api.getInvestmentProposal();
+        this.clearForm()
+        this.offers = await this.$api.getInvestmentProposal()
     }
 };
 </script>

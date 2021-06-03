@@ -64,25 +64,38 @@
             <v-text-field
                 outlined
                 dense
-                hide-details
                 placeholder="Personnummer ÅÅÅÅMMDD-XXXX"
                 style="margin-bottom: 0.3rem"
+                v-model="form.personnummer"
+                :error-messages="errors.personnummer"
+                :hide-details="!errors.personnummer"
             />
             <v-text-field
                 outlined
                 dense
-                hide-details
                 placeholder="e-post"
+                v-model="form.e_post"
+                :error-messages="errors.e_post"
+                :hide-details="!errors.e_post"
                 style="margin-bottom: 0.3rem"
             />
             <v-text-field
                 outlined
                 dense
-                hide-details
                 placeholder="Mobiltelefon"
+                v-model="form.mobiltelefon"
+                :error-messages="errors.mobiltelefon"
+                :hide-details="!errors.mobiltelefon"
                 style="margin-bottom: 0.3rem"
             />
-            <v-text-field outlined dense hide-details placeholder="Mitt namn" />
+            <v-text-field
+                outlined
+                dense
+                placeholder="Mitt namn"
+                v-model="form.mitt_namn"
+                :error-messages="errors.mitt_namn"
+                :hide-details="!errors.mitt_namn"
+            />
         </div>
 
         <div class="form-group">
@@ -116,13 +129,26 @@
             <v-col cols="12" md="2">
                 <div class="form-group">
                     <label>Clearing <span>*</span></label>
-                    <v-text-field v-model="form.ange_clearing" outlined dense hide-details maxlength="4" />
+                    <v-text-field
+                        v-model="form.ange_clearing"
+                        :error-messages="errors.ange_clearing"
+                        :hide-details="!errors.ange_clearing"
+                        outlined
+                        dense
+                        maxlength="4"
+                    />
                 </div>
             </v-col>
             <v-col cols="12" md="10">
                 <div class="form-group">
                     <label>Kontonummer <span>*</span></label>
-                    <v-text-field v-model="form.ange_kontonummer" outlined dense hide-details maxlength="4" />
+                    <v-text-field
+                        v-model="form.ange_kontonummer"
+                        :error-messages="errors.ange_kontonummer"
+                        :hide-details="!errors.ange_kontonummer"
+                        outlined
+                        dense
+                    />
                 </div>
             </v-col>
         </v-row>
@@ -130,37 +156,38 @@
         <div class="form-group">
             <v-checkbox
                 v-model="form.varifran"
+                :error-messages="errors.varifran"
                 label="Jag har läst och förstått villkoren"
             />
         </div>
 
-        <v-btn color="#8DDECE">SKICKA</v-btn>
+        <v-btn @click="sendClick" :loading="submitButtonLoading" color="#8DDECE">SKICKA</v-btn>
 
     </div>
 </template>
 
 <script>
 export default {
+    props: {
+        form: {
+            type: Object,
+            required: true
+        },
+        submitButtonLoading: {
+            type: Boolean,
+            default: false
+        }
+    },
     data: () => ({
         array4: [1, 2, 3, 4],
-        form: {
-            invest_data: 1,
-            jag: "firma",
-            organisationsnummer: '',
-            kvarifran: 'siab',
-            vanligen_beskriv: '',
-            chvarifran: false,
-            ange_clearing: '',
-            ange_kontonummer: '',
-            varifran: false,
-            personer_med1: '',
-            personer_med2: '',
-            personer_med3: '',
-            personer_med4: '',
-            agande1: null,
-            agande2: null,
-            agande3: null,
-            agande4: null,
+        errors: {
+            personnummer: null,
+            e_post: null,
+            mobiltelefon: null,
+            mitt_namn: null,
+            ange_clearing: null,
+            ange_kontonummer: null,
+            varifran: null
         },
         kvarifranOptions: [
             {
@@ -193,6 +220,32 @@ export default {
             },
         ],
     }),
+    methods: {
+        validateForm(){
+            const props = [
+                'personnummer',
+                'e_post',
+                'mobiltelefon',
+                'mitt_namn',
+                'ange_clearing',
+                'ange_kontonummer',
+            ]
+            const errorMsg = 'Det här är ett obligatoriskt fält';
+            for(let prop of props){
+                const value = this.form[prop].trim()
+                this.errors[prop] = value ? null : [errorMsg]
+            }
+            this.errors.varifran = this.form.varifran ? null : [errorMsg]
+
+            const hasAnyErrors = Object.values(this.errors).reduce((bag, val) => (bag || val), false)
+            return !hasAnyErrors;
+        },
+        sendClick(){
+            if(this.validateForm()){
+                this.$emit('submit');
+            }
+        }
+    }
 };
 </script>
 

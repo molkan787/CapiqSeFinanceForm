@@ -1,5 +1,5 @@
 <?php
-
+if($_SERVER['REQUEST_METHOD'] != 'GET'){ die(); }
 require_once './api.php';
 
 $gql = <<<QUERY

@@ -20,3 +20,12 @@ $ yarn generate
 ## To make changes
 
 All texts displayed to the website's vistor are hard-coded in .vue files, to change thus texts edit the following files `pages/*.vue` and `components/*.vue`
+
+## Facebook Share button (in the footer)
+
+To change it:
+- Visit https://developers.facebook.com/docs/plugins/share-button/?locale=fr_FR
+- Enter the url to share
+- Click "Get code"
+- Select "iFrame"
+- Copy and past code in `components/CommonContent.vue` line `19` (replace the current iFrame html markup)

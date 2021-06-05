@@ -39,21 +39,29 @@
 
             <v-card v-if="selectedOffer">
                 <v-card-text>
-                    <user-form :form="formData" @submit="formSubmit" :submitButtonLoading="submitButtonLoading" />
+                    <user-form :bucket="dataBucket" :offer="selectedOffer" :form="formData" @submit="onFormSubmitClick" :submitButtonLoading="submitButtonLoading" />
                 </v-card-text>
             </v-card>
         </div>
+        <br> <br>
+
+        <confirm-dialog @confirmed="onConfirmClick" @canceled="showConfirmationDialog = false" :priceText="totalText" :loading="confirmButtonLoading" :isOpen="showConfirmationDialog" />
     </div>
 </template>
 
 <script>
+import qs from 'querystring'
+import ConfirmDialog from '~/components/ConfirmDialog.vue';
 import UserForm from '~/components/UserForm.vue';
 
 export default {
-    components: { UserForm },
+    components: { UserForm, ConfirmDialog },
     computed: {
         selectedOffer(){
             return this.us_selectedOffer || (this.offers && this.offers[0]) || null
+        },
+        totalText(){
+            return this.dataBucket.totalText
         }
     },
     data: () => ({
@@ -61,24 +69,65 @@ export default {
         us_selectedOffer: null,
         offers: null,
         formData: {},
+        showConfirmationDialog: false,
+        confirmButtonLoading: false,
+        dataBucket: {
+            totalText: ''
+        },
+        uat: '',
     }),
     methods: {
-        async formSubmit(){
+        async onFormSubmitClick(){
             this.submitButtonLoading = true
-            const offer = this.selectedOffer;
             try {
-                await this.$api.submitForm({
-                    offerId: offer.id,
-                    offerTitle: offer.title,
-                    ...this.formData
-                })
-                // this.clearForm()
-                alert('Form was successfully submited')
+                const formData = JSON.stringify(this.formData)
+                window.localStorage.setItem('form_data', formData)
+                window.localStorage.setItem('selected_offerId', this.selectedOffer.id)
+                const redirectUrl = window.location.href.split('?')[0] + '?postSubmit=1'
+                const { loginUrl } = await this.$api.requestAuthorizationCode(redirectUrl)
+                window.location.href = loginUrl
             } catch (error) {
                 console.error(error)
                 alert('An error occured, Please try again')
             }
             this.submitButtonLoading = false
+        },
+        async onConfirmClick(){
+            this.confirmButtonLoading = true
+            await this.formSubmit()
+            this.confirmButtonLoading = false
+        },
+        async formSubmit(){
+            const offer = this.selectedOffer;
+            try {
+                const { title: offerTitle, company: { name: companyName } } = this.selectedOffer;
+                const info = {
+                    companyName: companyName,
+                    offerTitle: offerTitle,
+                    totalPay: this.dataBucket.totalText
+                }
+                const response = await this.$api.submitForm({
+                    offerId: offer.id,
+                    offerTitle: offer.title,
+                    uat: this.uat,
+                    info: info,
+                    ...this.formData
+                })
+                const success = response.statusCode === 'OK'
+                if(success){
+                    this.clearCachedState()
+                    const eInfo = encodeURIComponent(btoa(JSON.stringify(info)))
+                    const redirectTo = '/thankyou?info=' + eInfo
+                    window.location.href = redirectTo
+                }
+            } catch (error) {
+                console.error(error)
+                alert('An error occured, Please try again')
+            }
+        },
+        clearCachedState(){
+            window.localStorage.removeItem('form_data')
+            window.localStorage.removeItem('selected_offerId')
         },
         selectOffer(offer){
             this.us_selectedOffer = offer
@@ -106,12 +155,40 @@ export default {
                 agande2: null,
                 agande3: null,
                 agande4: null,
+                units: 1
             }
         }
     },
-    async created(){
-        this.clearForm()
-        this.offers = await this.$api.getInvestmentProposal()
+    async mounted(){
+        if(process.client){
+            const params = qs.parse(window.location.href.split('?')[1] || '')
+            console.log(params)
+            let offerId = null
+            if(params.postSubmit === '1'){
+                const formData = JSON.parse(window.localStorage.getItem('form_data'))
+                offerId = window.localStorage.getItem('selected_offerId')
+                this.formData = formData
+                if(params.status === 'done'){
+                    this.uat = params.uat
+                    setTimeout(() => {
+                        try {
+                            document.getElementById('formSubmitBtn').scrollIntoView()
+                        } catch (error) {
+                        }
+                        this.showConfirmationDialog = true
+                    }, 1000)
+                }else{
+                    alert('Access to your account was declined or an error occured, Please try submiting again');
+                }
+            }else{
+                this.clearForm()
+            }
+            this.offers = await this.$api.getInvestmentProposal()
+            if(offerId){
+                const offerIndex = this.offers.findIndex(o => o.id === offerId)
+                this.us_selectedOffer = this.offers[offerIndex]
+            }
+        }
     }
 };
 </script>

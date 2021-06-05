@@ -9,7 +9,7 @@ query{
 authorizations(first: 1, filters: { nin: "$nin" }){
     nodes {
         asAdministrator {
-            investmentProposals(first: 10) {
+            investmentProposals(first: 10, filters: { status: Started }) {
                 ...investmentProposalAdministeredConnectionFragment
             }
         }
@@ -26,6 +26,15 @@ fragment proposalFragment on DirectedInvestmentProposalAdministered{
     title
     description
     terms
+    company {
+        name
+    }
+    price {
+        currency{
+          code
+        }
+        amountFloat
+    }
 }
 QUERY;
 

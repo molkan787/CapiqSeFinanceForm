@@ -1,10 +1,14 @@
 <?php
 
+require_once './config.php';
+
 function initDb(){
-    $host = '127.0.0.1';
-    $db   = 'capiq_webapp';
-    $user = 'root';
-    $pass = '';
+    global $config;
+
+    $host = $config['db_host'];
+    $db   = $config['db_name'];
+    $user = $config['db_user'];
+    $pass = $config['db_pass'];
     $port = "3306";
     $charset = 'utf8';
 

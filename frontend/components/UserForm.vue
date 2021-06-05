@@ -153,6 +153,43 @@
             </v-col>
         </v-row>
 
+        <div style="width:100%;height:2rem"></div>
+
+        <div class="form-group">
+            <h2>SUBSCRIBE</h2>
+            <label>Price:</label> <span>{{ priceText }} / Unit</span> <br>
+            <span>You are subscribing as {{ form.mitt_namn }} (you)</span>
+        </div>
+
+        <v-row>
+            <v-col cols="12" md="2">
+                <div class="form-group">
+                    <label>Units</label>
+                    <v-text-field
+                        v-model.number="form.units"
+                        :error-messages="errors.units"
+                        :hide-details="!errors.units"
+                        outlined
+                        dense
+                        type="number"
+                        min="1"
+                    />
+                </div>
+            </v-col>
+            <v-col cols="12" md="10">
+                <div class="form-group">
+                    <label>Total</label>
+                    <v-text-field
+                        :value="totalText"
+                        hide-details
+                        outlined
+                        dense
+                        readonly
+                    />
+                </div>
+            </v-col>
+        </v-row>
+
         <div class="form-group">
             <v-checkbox
                 v-model="form.varifran"
@@ -161,7 +198,7 @@
             />
         </div>
 
-        <v-btn @click="sendClick" :loading="submitButtonLoading" color="#8DDECE">SKICKA</v-btn>
+        <v-btn @click="sendClick" :loading="submitButtonLoading" id="formSubmitBtn" color="#8DDECE">COMPLETE</v-btn>
 
     </div>
 </template>
@@ -173,9 +210,45 @@ export default {
             type: Object,
             required: true
         },
+        offer: {
+            type: Object,
+        },
         submitButtonLoading: {
             type: Boolean,
             default: false
+        },
+        bucket: {
+            type: Object,
+            default: () => ({})
+        }
+    },
+    computed: {
+        totalText(){
+            if(!this.offer) return ''
+            return `${this.total} ${this.currencyCode}`
+        },
+        priceText(){
+            if(!this.offer) return ''
+            const { price: { amountFloat } } = this.offer;
+            return `${amountFloat.toFixed(2)} ${this.currencyCode}`
+        },
+        total(){
+            if(!this.offer) return 0
+            const { price: { amountFloat } } = this.offer
+            return amountFloat * this.form.units
+        },
+        currencyCode(){
+            if(!this.offer) return ''
+            const { price: { currency: { code } } } = this.offer
+            return code
+        }
+    },
+    watch: {
+        totalText: {
+            immediate: true,
+            handler(txt){
+                this.bucket.totalText = txt
+            }
         }
     },
     data: () => ({
@@ -187,7 +260,8 @@ export default {
             mitt_namn: null,
             ange_clearing: null,
             ange_kontonummer: null,
-            varifran: null
+            varifran: null,
+            units: ''
         },
         kvarifranOptions: [
             {
@@ -228,7 +302,7 @@ export default {
                 'mobiltelefon',
                 'mitt_namn',
                 'ange_clearing',
-                'ange_kontonummer',
+                'ange_kontonummer'
             ]
             const errorMsg = 'Det här är ett obligatoriskt fält';
             for(let prop of props){
@@ -236,6 +310,7 @@ export default {
                 this.errors[prop] = value ? null : [errorMsg]
             }
             this.errors.varifran = this.form.varifran ? null : [errorMsg]
+            this.errors.units = this.form.units > 0 ? null : [errorMsg]
 
             const hasAnyErrors = Object.values(this.errors).reduce((bag, val) => (bag || val), false)
             return !hasAnyErrors;

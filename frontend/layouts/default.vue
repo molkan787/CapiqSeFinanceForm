@@ -1,8 +1,19 @@
 <template>
   <div>
-    <Nuxt />
+    <Nuxt data-app="true" />
+    <CommonContent />
   </div>
 </template>
+
+<script>
+import CommonContent from '../components/CommonContent'
+
+export default {
+  components: {
+      CommonContent,
+  },
+}
+</script>
 
 <style>
 html {

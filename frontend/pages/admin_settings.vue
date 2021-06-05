@@ -7,6 +7,7 @@
                 <v-text-field :disabled="saveLoading" label="ClientId" v-model="settings.client_id" />
                 <v-text-field :disabled="saveLoading" label="ClientSecret Endpoint" v-model="settings.client_secret" />
                 <v-text-field :disabled="saveLoading" label="NIN" v-model="settings.nin" />
+                <v-text-field :disabled="saveLoading" label="Payment Account Number" v-model="settings.payment_account_number" />
                 <v-btn @click="saveClick" :loading="saveLoading">save</v-btn>
             </v-card-text>
         </v-card>

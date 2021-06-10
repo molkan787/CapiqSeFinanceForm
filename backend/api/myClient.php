@@ -16,7 +16,8 @@ function runQuery($query){
     }catch(ServerException $error){
         $msg = strtolower($error->getMessage());
         $tokenExpried = strpos($msg, 'authentication token expired') !== false;
-        if($tokenExpried){
+        $invalidToken = strpos($msg, 'invalid authentication token') !== false;
+        if($tokenExpried || $invalidToken){
             refreshToken();
             $results = $gqlclient->runRawQuery($query);
         }

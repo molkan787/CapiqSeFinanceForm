@@ -15,6 +15,9 @@
 </template>
 
 <script>
+if(process.server){
+    var alert = () => 0
+}
 export default {
     data: () => ({
         settings: {

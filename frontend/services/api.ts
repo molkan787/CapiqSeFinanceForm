@@ -7,38 +7,40 @@ export class Api{
 
     constructor(private axios: any){}
 
-    public get API_BASE_URL(){
-        return dev ? 'http://localhost/api' : window.location.origin + '/api';
+    public API_BASE_URL(){
+        return dev ? 'http://localhost/api' : (
+            ((typeof window == 'object' && window.location.origin) || 'https://invest.capiq.se') + '/api'
+        );
     }    
 
     public async getInvestmentProposal() {
-        const { data } = await this.axios.get(`${this.API_BASE_URL}/investmentProposal.php`)
+        const { data } = await this.axios.get(`${this.API_BASE_URL()}/investmentProposal.php`)
         return data
     }
 
     public async submitForm(formData: any){
-        const { data } = await this.axios.post(`${this.API_BASE_URL}/submitForm.php`, formData)
+        const { data } = await this.axios.post(`${this.API_BASE_URL()}/submitForm.php`, formData)
         return data
     }
 
     public async getSettings(){
-        const { data } = await this.axios.get(`${this.API_BASE_URL}/admin_settings.php`)
+        const { data } = await this.axios.get(`${this.API_BASE_URL()}/admin_settings.php`)
         return data
     }
 
     public async putSettings(settings: any){
-        return await this.axios.post(`${this.API_BASE_URL}/admin_settings.php`, settings)
+        return await this.axios.post(`${this.API_BASE_URL()}/admin_settings.php`, settings)
     }
 
     public async requestAuthorizationCode(internalRedirect: string){
-        const { data } = await this.axios.post(`${this.API_BASE_URL}/requestAuthorizationCode.php`, {
+        const { data } = await this.axios.post(`${this.API_BASE_URL()}/requestAuthorizationCode.php`, {
             internalRedirect
         })
         return data
     }
 
     public async getThankyouMessage(info: any){
-        const { data } = await this.axios.post(`${this.API_BASE_URL}/thankyou_message.php`, info)
+        const { data } = await this.axios.post(`${this.API_BASE_URL()}/thankyou_message.php`, info)
         return data
     }
 

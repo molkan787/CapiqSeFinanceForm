@@ -1,5 +1,5 @@
 const dev = process.env.NODE_ENV !== 'production';
-const API_BASE_URL = dev ? 'http://localhost/api' : 'https://dev.capiq.se/api';
+const API_BASE_URL = dev ? 'http://localhost/api' : 'https://invest.capiq.se/api';
 
 export class Api{
 

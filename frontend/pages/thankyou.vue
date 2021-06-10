@@ -1,15 +1,17 @@
 <template>
-    <div class="container">
-        <h1 class="grand-title">
-            Thank you for your interest in our shares
-        </h1>
-        <v-card width="800">
-            <v-card-text>
+    <div>
+        <div class="header">
+            <h1 class="grand-title">
+               Thank you for your interest in our shares
+            </h1>
+        </div>
+        <div class="container">
+            <div class="mycard">
                 <div v-html="messageHTML"></div>
-            </v-card-text>
-        </v-card>
-        <br>
-        <br>
+            </div>
+            <br>
+            <br>
+        </div>
     </div>
 </template>
 
@@ -32,9 +34,17 @@ export default {
 </script>
 
 <style lang="scss">
-$primary: #34495E;
+$primary: #111;
 $colorVar1: #35495e;
 $colorVar2: #467977;
+.header {
+    background-image: url("~/assets/images/subpage-pattern-bg.png");
+    background-repeat: repeat;
+    height: 6rem;
+    text-align: center;
+    padding: 1.7rem;
+    opacity: 0.9;
+}
 .container {
     margin: 0 auto;
     min-height: 60vh;
@@ -49,6 +59,7 @@ $colorVar2: #467977;
 
 .grand-title {
     margin-bottom: 2rem;
+    color: $primary;
 }
 
 .content {
@@ -84,6 +95,22 @@ $colorVar2: #467977;
     color: #526488;
     word-spacing: 5px;
     padding-bottom: 15px;
+}
+.mycard{
+    max-width: 840px;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgb(0 0 0 / 10%);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #f0f0f0;
+    font-size: 16px;
+
+    h2{
+        margin-bottom: 1rem;
+    }
+    h4{
+        margin-bottom: 5px;
+    }
 }
 .v-card__title{
     color: #232f3b !important;

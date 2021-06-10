@@ -194,11 +194,14 @@
             <v-checkbox
                 v-model="form.varifran"
                 :error-messages="errors.varifran"
-                label="Jag har läst och förstått villkoren"
-            />
+            >
+                <template #label>
+                    Jag har läst och förstått&nbsp;<a @click.stop href="https://capiq.se/allmanna-villkor/" target="_blank">villkoren</a>
+                </template>
+            </v-checkbox>
         </div>
 
-        <v-btn @click="sendClick" :loading="submitButtonLoading" id="formSubmitBtn" color="#8DDECE">COMPLETE</v-btn>
+        <v-btn @click="sendClick" :loading="submitButtonLoading" id="formSubmitBtn" color="#89C53F" tile>COMPLETE</v-btn>
 
     </div>
 </template>
@@ -330,8 +333,9 @@ export default {
         margin-bottom: 1rem;
     }
     & > label {
-        font-weight: bold;
-        font-size: 1rem;
+        font-weight: 600;
+        color: #111;
+        font-size: 16px;
         display: inline-block;
         margin-bottom: 0.5rem;
         &.ivmr {
@@ -341,5 +345,27 @@ export default {
             color: red;
         }
     }
+}
+</style>
+
+<style lang="scss">
+.form-group{
+    input{
+        color: #333;
+    }
+}
+#formSubmitBtn{
+    box-shadow: none !important;
+    background-color: #89c53f !important;
+    border-color: transparent !important;
+    padding: 12px 18px !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    line-height: 18px !important;
+    text-transform: uppercase !important;
+    transition: all 0.3s ease-in-out 0s !important;
+    border-radius: 0 !important;
+    height: 46px;
 }
 </style>

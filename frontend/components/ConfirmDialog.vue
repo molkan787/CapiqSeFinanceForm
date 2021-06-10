@@ -12,10 +12,10 @@
             <v-divider></v-divider>
 
             <v-card-actions>
-                <v-btn :loading="loading" @click="$emit('confirmed')" color="#1867C0" style="margin-right:1rem;width:120px" class="white--text">
+                <v-btn :loading="loading" @click="$emit('confirmed')" color="#1867C0" style="margin-right:1rem;width:120px;box-shadow:none" tile class="white--text">
                     Yes
                 </v-btn>
-                <v-btn :disabled="loading" @click="$emit('canceled')" color="#DD3333" style="margin-right:1rem;width:120px" class="white--text">
+                <v-btn :disabled="loading" @click="$emit('canceled')" color="#DD3333" style="margin-right:1rem;width:120px;box-shadow:none" tile class="white--text">
                     Cancel
                 </v-btn>
                 <!-- <v-spacer></v-spacer> -->

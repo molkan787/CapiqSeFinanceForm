@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700&display=swap');
+
+html, body{
+    font-family: 'Libre Franklin', arial, sans-serif;
+}
+
 .v-messages.error--text{
     color: red !important;
 }

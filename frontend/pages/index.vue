@@ -2,7 +2,9 @@
     <div>
         <div class="header">
             <h1 class="grand-title">
-                Welcome to us, for the moment we have the following offers
+                Välkommen till CapIQ F. Capital AB.
+Just nu har vi följande emission/er tillgängliga.
+
             </h1>
         </div>
         <div class="container">

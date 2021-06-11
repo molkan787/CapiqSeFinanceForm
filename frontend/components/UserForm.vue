@@ -156,9 +156,9 @@
         <div style="width:100%;height:2rem"></div>
 
         <div class="form-group">
-            <h2>SUBSCRIBE</h2>
-            <label>Price:</label> <span>{{ priceText }} / Unit</span> <br>
-            <span>You are subscribing as {{ form.mitt_namn }} (you)</span>
+            <h2>Teckna</h2>
+            <label>Pris:</label> <span>{{ priceText }} / Unit</span> <br>
+            <span>Du tecknar som {{ form.mitt_namn }} (you)</span>
         </div>
 
         <v-row>
@@ -201,7 +201,7 @@
             </v-checkbox>
         </div>
 
-        <v-btn @click="sendClick" :loading="submitButtonLoading" id="formSubmitBtn" color="#89C53F" tile>COMPLETE</v-btn>
+        <v-btn @click="sendClick" :loading="submitButtonLoading" id="formSubmitBtn" color="#89C53F" tile>Slutför</v-btn>
 
     </div>
 </template>

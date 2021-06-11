@@ -22,20 +22,20 @@
         <div class="footer">
             <div class="cols-wrapper">
                 <div class="col">
-                    <label class="title">Företag</label>
+                    <label class="title">Om CapIQ</label>
                     <ul>
-                        <li> <a class="footer-links" href="https://capiq.se" target="_blank">Capiq.se</a> </li>
-                        <li> <a class="footer-links" :href="readmoreLink" target="_blank">Readmore about us</a> </li>
+                        <li> <a class="footer-links" href="https://capiq.se" target="_blank">Vår hemsida</a> </li>
+                        <li> <a class="footer-links" :href="readmoreLink" target="_blank">Memorandum</a> </li>
                     </ul>
                 </div>
                 <div class="col">
-                    <label class="title">Kontakta oss</label>
+                    <label class="title">Har du frågor</label>
                     <ul>
-                        <li> <a class="footer-links" href="mailto:invest@capiq.se">Email us</a> </li>
+                        <li> <a class="footer-links" href="mailto:invest@capiq.se">Skicka mail</a> </li>
                     </ul>
                 </div>
                 <div class="col">
-                    <label class="title">Sociala media</label>
+                    <label class="title">Dela på facebook</label>
                     <ul>
                         <li>
                             <div class="share-btn-wrapper">

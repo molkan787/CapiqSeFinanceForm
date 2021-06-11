@@ -2,7 +2,7 @@
     <div>
         <div class="header">
             <h1 class="grand-title">
-               Thank you for your interest in our shares
+               Vi på CapIQ tackar för visat intresse och ert förtroende
             </h1>
         </div>
         <div class="container">

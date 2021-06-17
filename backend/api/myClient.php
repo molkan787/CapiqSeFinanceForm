@@ -13,7 +13,7 @@ function runQuery($query){
     global $gqlclient;
     try{
         $results = $gqlclient->runRawQuery($query);
-    }catch(ServerException $error){
+    }catch(Exception $error){
         $msg = strtolower($error->getMessage());
         $tokenExpried = strpos($msg, 'authentication token expired') !== false;
         $invalidToken = strpos($msg, 'invalid authentication token') !== false;
